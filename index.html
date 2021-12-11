@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<body>
+  <div class="wrapper">
+    <div class="score">
+      <div class="bottle">
+        <div class="empty"></div>
+        <div class="points" id="green"></div>
+      </div>
+      <div class="text" id="slytherin">Hej du</div>
+    </div>
+    <div class="score">
+      <div class="bottle">
+        <div class="empty"></div>
+        <div class="points" id="yellow"></div>
+      </div>
+      <div class="text" id="hufflepuff"></div>
+    </div>
+    <div class="score">
+      <div class="bottle">
+        <div class="empty"></div>
+        <div class="points" id="red"></div>
+      </div>
+      <div class="text" id="gryffindor"></div>
+    </div>
+    <div class="score">
+      <div class="bottle">
+        <div class="empty"></div>
+        <div class="points" id="blue"></div>
+      </div>
+      <div class="text" id="ravenclaw"></div>
+    </div>
+  </div>
+  <script>
+
+    let startData = { gryffindor: 2, hufflepuff: 1, max: 100, ravenclaw: 1, slytherin: 2 };
+
+    let updateTotals = (data) => {
+      document.getElementById('slytherin').innerText = data.slytherin;
+      document.getElementById('hufflepuff').innerText = data.hufflepuff;
+      document.getElementById('ravenclaw').innerText = data.ravenclaw;
+      document.getElementById('gryffindor').innerText = data.gryffindor;
+
+      let totalHeigtht = 700;
+      let step = 700 / data.max;
+      let offset = 0;
+      document.getElementById("green").style.height = `${offset + (step * data.slytherin)}px`
+      document.getElementById("red").style.height = `${offset + step * data.gryffindor}px`
+      document.getElementById("yellow").style.height = `${offset + step * data.hufflepuff}px`
+      document.getElementById("blue").style.height = `${offset + step * data.ravenclaw}px`
+
+    }
+
+    updateTotals(startData);
+
+  </script>
+  <script type="module">
+
+    
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js'
+    import { getDatabase, ref, onValue } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js'
+
+    //import { firestore } from 'https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js'
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAd2LzEA7gt49kD8kUui5SJt2_sGDYkhcY",
+      authDomain: "hp-gasque.firebaseapp.com",
+      // For databases not in the us-central1 location, databaseURL will be of the
+      // form https://[databaseName].[region].firebasedatabase.app.
+      // For example, https://your-database-123.europe-west1.firebasedatabase.app
+      databaseURL: "https://hp-gasque-default-rtdb.europe-west1.firebasedatabase.app"
+    };
+
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+
+    const db = getDatabase(app);
+
+    const dataRef = ref(db, '/');
+
+    onValue(dataRef, (snapshot) => {
+      const data = snapshot.val();
+      updateTotals(data);
+    });
+</script>
+</body>
+<link rel="stylesheet" href="styles.css">
